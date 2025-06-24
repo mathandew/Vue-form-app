@@ -1,5 +1,10 @@
 <template>
-  <div class="app">
+  <div :class="['app', { dark: isDark }]" :style="appStyle">
+    <div class="toggle">
+      <input type="checkbox" id="darkToggle" v-model="isDark" />
+      <label for="darkToggle">🌙 Toggle Dark Mode</label>
+    </div>
+
     <div class="form-container">
       <h1>💌 Contact Us</h1>
       <form @submit.prevent="submitForm">
@@ -35,12 +40,20 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 
 const form = ref({ name: '', email: '', message: '' })
 const submitted = ref(false)
 const lastSubmittedName = ref('')
 const storedMessages = ref([])
+const isDark = ref(false)
+
+const appStyle = computed(() => ({
+  backgroundImage: `linear-gradient(to right, #74ebd5, #acb6e5), url('/mayan.JPG')`,
+  backgroundRepeat: 'no-repeat',
+  backgroundSize: 'cover',
+  backgroundPosition: 'center center'
+}))
 
 const submitForm = () => {
   if (!form.value.name || !form.value.email || !form.value.message) {
@@ -71,20 +84,37 @@ onMounted(() => {
 })
 </script>
 
-<style scoped>
-/* Background image and gradient */
+<style>
 .app {
   min-height: 100vh;
-  background: linear-gradient(to right, #74ebd5, #acb6e5), url('https://images.unsplash.com/photo-1503264116251-35a269479413?auto=format&fit=crop&w=1500&q=80') no-repeat center center/cover;
   display: flex;
   flex-direction: column;
   align-items: center;
   font-family: 'Segoe UI', sans-serif;
   padding: 2rem;
   color: #333;
+  transition: all 0.4s ease;
 }
 
-/* Form container */
+/* Toggle switch */
+.toggle {
+  width: 100%;
+  max-width: 600px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 1rem;
+  font-size: 0.95rem;
+  color: inherit;
+}
+
+.toggle input[type="checkbox"] {
+  transform: scale(1.2);
+  cursor: pointer;
+  margin: 0;
+}
+
 .form-container {
   background-color: rgba(255, 255, 255, 0.9);
   padding: 2rem;
@@ -95,10 +125,11 @@ onMounted(() => {
   backdrop-filter: blur(6px);
   margin-bottom: 2rem;
   text-align: center;
+  transition: all 0.4s ease;
 }
 
-/* Inputs */
-input, textarea {
+input,
+textarea {
   width: 100%;
   padding: 0.7rem;
   margin-bottom: 1rem;
@@ -109,13 +140,13 @@ input, textarea {
   transition: 0.3s ease;
 }
 
-input:focus, textarea:focus {
+input:focus,
+textarea:focus {
   border-color: #6c5ce7;
 }
 
-/* Blinking button */
 button {
-  background: linear-gradient(90deg, #ff9a9e 0%, #fad0c4 99%, #fad0c4 100%);
+  background: linear-gradient(90deg, #ff9a9e 0%, #fad0c4 99%);
   color: #fff;
   padding: 0.7rem 2rem;
   border: none;
@@ -128,26 +159,32 @@ button {
 }
 
 @keyframes blink {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.7; transform: scale(1.05); }
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.05);
+  }
 }
 
-/* Thanks message */
 .thanks-msg {
   margin-top: 1rem;
   color: green;
   font-weight: bold;
 }
 
-/* Messages section */
 .messages {
   max-width: 600px;
   background: rgba(255, 255, 255, 0.95);
   padding: 1.5rem;
   border-radius: 20px;
-  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
   overflow-y: auto;
   width: 100%;
+  transition: all 0.4s ease;
 }
 
 .messages h2 {
@@ -163,5 +200,33 @@ button {
 .messages li {
   margin-bottom: 1.5rem;
   text-align: left;
+}
+
+/* ------------------- DARK MODE ------------------- */
+.app.dark {
+  color: #eee;
+}
+
+.app.dark .form-container,
+.app.dark .messages {
+  background-color: rgba(30, 30, 30, 0.95);
+  color: #eee;
+}
+
+.app.dark input,
+.app.dark textarea {
+  background: #222;
+  color: #eee;
+  border: 2px solid #555;
+}
+
+.app.dark input:focus,
+.app.dark textarea:focus {
+  border-color: #9b59b6;
+}
+
+.app.dark button {
+  background: linear-gradient(90deg, #8e44ad, #9b59b6);
+  box-shadow: 0 0 15px #9b59b6;
 }
 </style>
